@@ -1,0 +1,33 @@
+python train.py --device 0 --img 640 --batch 40 --epochs 20 --data label_dataset.yaml --weights yolov5m.pt
+
+
+on failure:
+python train.py --device 0 --resume --weights runs/train/exp4/weights/last.pt
+
+
+
+
+
+
+
+
+> nvidia-smi
+
+| NVIDIA-SMI 560.94                 Driver Version: 560.94         CUDA Version: 12.6
+
+
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+
+## Build
+
+pip install --upgrade build
+python -m build
+
+output in dist/
+
+
+## Exporting weights (os-agnostic)
+
+python export.py --weights runs/train/exp8/weights/best.pt --include onnx torchscript --dynamic --simplify
+python export.py --weights runs/train/exp8/weights/best.pt --include torchscript --device cpu

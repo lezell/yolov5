@@ -19,7 +19,7 @@
 # For comprehensive documentation and usage instructions, visit: https://docs.ultralytics.com
 
 [build-system]
-requires = ["setuptools>=43.0.0", "wheel"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 # Project settings -----------------------------------------------------------------------------------------------------
@@ -143,3 +143,18 @@ close-quotes-on-newline = true
 [tool.codespell]
 ignore-words-list = "crate,nd,strack,dota,ane,segway,fo,gool,winn,commend"
 skip = '*.csv,*venv*,docs/??/,docs/mkdocs_??.yml'
+
+
+[tool.setuptools]
+# single-file modules at the repo root that YOLO imports
+py-modules = ["export"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+  "y5wrap*",
+  "models*",
+  "utils*",
+  "segment*",
+  "classify*",
+]
