@@ -1,24 +1,26 @@
 import warnings
-warnings.filterwarnings("ignore", category=FutureWarning, module=".*common.*")
 
-import torch
-from torch.serialization import add_safe_globals
-from models.common import DetectMultiBackend
+warnings.filterwarnings("ignore", category=FutureWarning, module=".*common.*")
 
 import cv2
 import numpy as np
 import torch
+from torch.serialization import add_safe_globals
+
+from models.common import DetectMultiBackend
 from utils.augmentations import letterbox
 
 # --- Allow-list YOLOv5 model classes for PyTorch 2.6+ safe unpickling ---
 try:
     from models import yolo as _y
+
     _allow = [getattr(_y, n) for n in ("DetectionModel", "SegmentationModel", "ClassificationModel") if hasattr(_y, n)]
     if _allow:
         add_safe_globals(_allow)
 except Exception:
     pass
 # -------------------------------------------------------------------------
+
 
 def _auto_device():
     # Minimal, robust chooser (avoids utils.select_device banner + file_date)
@@ -34,8 +36,7 @@ def get_stride(m):
     s = getattr(m, "stride", 32)
     # tensor -> max; list/tuple -> max; int -> itself
     try:
-        import torch
-        if hasattr(s, "numel"):              # torch.Tensor-like
+        if hasattr(s, "numel"):  # torch.Tensor-like
             return int(s.max()) if s.numel() > 1 else int(s)
     except Exception:
         pass
@@ -44,20 +45,19 @@ def get_stride(m):
     return int(s)
 
 
-
 def preprocess_bchw(img_bgr, imgsz, stride):
     # imgsz can be int or tuple; normalize to (h, w)
     if isinstance(imgsz, int):
         imgsz = (imgsz, imgsz)
     else:
         assert len(imgsz) == 2, "imgsz must be int or (h, w)"
-    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)     # HWC RGB
+    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)  # HWC RGB
     # Force exact square output of (imgsz[0], imgsz[1]) that’s stride-aligned
     img, _, _ = letterbox(img_rgb, new_shape=imgsz, stride=stride, auto=False)
-    img = img.transpose(2, 0, 1)                           # HWC -> CHW
+    img = img.transpose(2, 0, 1)  # HWC -> CHW
     img = np.ascontiguousarray(img)
-    im = torch.from_numpy(img).float() / 255.0             # CHW float32 [0,1]
-    im = im.unsqueeze(0)                                   # BCHW
+    im = torch.from_numpy(img).float() / 255.0  # CHW float32 [0,1]
+    im = im.unsqueeze(0)  # BCHW
     return im
 
 
@@ -96,6 +96,7 @@ class MyYolo:
             preds = self.model(im)  # raw predictions
 
         from utils.general import non_max_suppression, scale_boxes
+
         dets = non_max_suppression(preds, conf_thres, iou_thres)[0]
 
         if dets is not None and len(dets):
