@@ -6,11 +6,6 @@ python train.py --device 0 --resume --weights runs/train/exp4/weights/last.pt
 
 
 
-
-
-
-
-
 > nvidia-smi
 
 | NVIDIA-SMI 560.94                 Driver Version: 560.94         CUDA Version: 12.6
@@ -19,8 +14,7 @@ python train.py --device 0 --resume --weights runs/train/exp4/weights/last.pt
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 
-## Build
-
+## Build package (Windows built package working on Linux). Can also be `pip install -e` otherwise
 pip install --upgrade build
 python -m build
 
