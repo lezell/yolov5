@@ -1,6 +1,5 @@
 python train.py --device 0 --img 640 --batch 40 --epochs 20 --data label_dataset.yaml --weights yolov5m.pt
 
-
 on failure:
 python train.py --device 0 --resume --weights runs/train/exp4/weights/last.pt
 
@@ -25,3 +24,14 @@ output in dist/
 
 python export.py --weights runs/train/exp8/weights/best.pt --include onnx torchscript --dynamic --simplify
 python export.py --weights runs/train/exp8/weights/best.pt --include torchscript --device cpu
+
+
+
+In importing package, ~:
+```
+yolo = MyYolo(weights=weights_file) #  Ex: yolov5/runs/train/exp8/weights/best.torchscript
+dets = yolo.process(frame)
+
+for *xyxy, conf, cls in dets:
+   ...
+```
